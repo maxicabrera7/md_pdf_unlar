@@ -58,13 +58,13 @@ Una vez reiniciada la terminal, el comando `cvtmdpdf` estará disponible globalm
 El sistema generará el PDF aplicando automáticamente el logo institucional y los márgenes configurados en `make_pdf.py`.
 
 ## ⚙️ Estructura del Proyecto
-'make_pdf.py:' Motor principal de renderizado.
+`make_pdf.py:` Motor principal de renderizado.
 
-'logo.png:' Recurso gráfico institucional.
+`logo.png:` Recurso gráfico institucional.
 
-'venv/:' Entorno virtual aislado para evitar conflictos de librerías.
+`venv/:` Entorno virtual aislado para evitar conflictos de librerías.
 
-'requirements.txt:' Lista de dependencias técnicas.
+`requirements.txt:` Lista de dependencias técnicas.
 
 ## ⚖️ Licencia
 MIT License.
