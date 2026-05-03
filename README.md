@@ -24,33 +24,40 @@ El sistema requiere un entorno configurado correctamente para evitar errores de 
 2. `.\venv\Scripts\Activate.ps1`
 3. `pip install -q -r requirements.txt`
 
-### 4. Registrar comando global en el `notepad $PROFILE`
-Sincronización automática cada 1 día y ejecución
+### **Configuración Dinámica ($PROFILE)**:
+   Añade este bloque a tu perfil de PowerShell (`notepad $PROFILE`). Solo debes editar la primera línea (`$basePath`) con la ruta real donde clonaste el proyecto:
 ```
-$syncFile = "$HOME\.cvt_last_sync"
-$currentDate = Get-Date
+   # --- COPIAR ESTO EN EL $PROFILE DE POWERSHELL ---
 
-function Invoke-LazySync {
-    param($repoPath)
-    if (Test-Path $syncFile) {
-        $rawContent = (Get-Content $syncFile -TotalCount 1).Trim()
-        $lastSync = $null
-        if ([DateTime]::TryParse($rawContent, [ref]$lastSync)) {
-            if ($currentDate -gt $lastSync.AddDays(1)) {
-                if (Test-Path "$repoPath\.git") {
-                    Push-Location $repoPath
-                    git pull origin main
-                    Pop-Location
-                    $currentDate.ToString() | Out-File $syncFile
-                }
-            }
-        } else { $currentDate.ToString() | Out-File $syncFile }
-    } else { $currentDate.ToString() | Out-File $syncFile }
+# 1. Definir la ruta donde se clonó el proyecto
+$PATH_UNLAR = "C:\ruta\donde\esta\el\repo"
+
+# 2. Función de sincronización inteligente (Si no existe, crearla)
+if (-not (Get-Command Invoke-LazySync -ErrorAction SilentlyContinue)) {
+    function Invoke-LazySync {
+        param($repoPath, $repoName, $days = 5)
+        $sFile = Join-Path $HOME ".cvt_sync_$repoName"
+        $now = Get-Date
+        if (Test-Path $sFile) {
+            try {
+                $last = [DateTime](Get-Content $sFile -Raw)
+                if ($now -lt $last.AddDays($days)) { return }
+            } catch { }
+        }
+        if (Test-Path (Join-Path $repoPath ".git")) {
+            Write-Host "[!] Sincronizando $repoName..." -ForegroundColor Yellow
+            Push-Location $repoPath; git pull origin main; Pop-Location
+            $now.ToString("yyyy-MM-dd HH:mm:ss") | Out-File $sFile
+        }
+    }
 }
 
+# 3. Comando de ejecución
 function cvtmdpdf {
-    Invoke-LazySync "C:\dev\md_pdf_unlar"
-    & "C:\dev\md_pdf_unlar\Scripts\python.exe" "C:\dev\md_pdf_unlar\make_pdf.py" $args[0]
+    Invoke-LazySync $PATH_UNLAR "unlar"
+    $py = Join-Path $PATH_UNLAR "Scripts\python.exe"
+    $sc = Join-Path $PATH_UNLAR "make_pdf.py"
+    if (Test-Path $py) { & $py $sc $args[0] } else { Write-Error "Entorno virtual no encontrado." }
 }
 ```
 
