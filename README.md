@@ -1,70 +1,179 @@
-# Conversor MD a PDF (UNLaR)
+# cvtmdpdf 📄
 
-Script de automatización para convertir archivos Markdown (.md) a PDF con el formato institucional de la UNLaR (T.U.I.). Optimizado para generación de trabajos prácticos con cumplimiento estricto de estilo y márgenes.
+Convierte archivos `.md` a PDF con portada institucional UNLaR, estilos, tablas, imágenes y bloques de código. Se configura por proyecto mediante un archivo `.cfg`.
 
-## 🛠 Requisitos Técnicos
+---
 
-El sistema requiere un entorno configurado correctamente para evitar errores de ejecución:
+## Requisitos
 
-*   [**Git CLI**](https://git-scm.com/install/windows): Necesario para la sincronización de actualizaciones.
-*   [**Python 3.10+**](https://www.python.org/downloads/): Motor de ejecución principal.
-*   **PowerShell 7+**: Terminal recomendada para la ejecución de scripts.
+- Python 3.8 o superior
+- pip
 
-## 🚀 Instalación y Configuración Automática
-```powershell
-# 1. Habilitar ejecución de scripts en el sistema
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+---
 
-# 2. Clonar el repositorio e ingresar al directorio
-git clone https://github.com/maxicabrera7/md_pdf_unlar.git
-cd md_pdf_unlar
+## Instalación
 
-# 3. Crear entorno virtual e instalar dependencias (reportlab, Pillow)
-python -m venv venv
-.\venv\Scripts\pip install -q -r requirements.txt
+### 1. Clonar o descargar el repositorio
 
-# 4. Registrar comando global en el $PROFILE
+Copiá los archivos en una carpeta fija, por ejemplo:
 
-$currentPath = Get-Location
-$profileDir = Split-Path $PROFILE -Parent
-if (!(Test-Path $profileDir)) { New-Item -Path $profileDir -ItemType Directory }
-
-$functionBlock = @"
-
-function cvtmdpdf {
-    # Sincronización automática con el repositorio
-    Write-Host "[!] Validando actualizaciones..." -ForegroundColor Cyan
-    Push-Location "$currentPath"
-    git pull --quiet
-    Pop-Location
-
-    # Ejecución mediante el entorno virtual aislado
-    & "$currentPath\venv\Scripts\python.exe" "$currentPath\make_pdf.py" `$args[0]
-}
-"@
-
-Add-Content -Path $PROFILE -Value `n$functionBlock
-Write-Host "[!] Instalación completada. Reinicie su terminal para usar 'cvtmdpdf'." -ForegroundColor Green
+```
+C:\Users\TuUsuario\scripts\cvtmdpdf\
 ```
 
-## 📄 Modo de Uso
+Asegurate de que estén presentes:
 
-Una vez reiniciada la terminal, el comando `cvtmdpdf` estará disponible globalmente:
+```
+cvtmdpdf/
+├── make_pdf.py
+├── requirements.txt
+└── logo.png          ← opcional, para la portada
+```
 
-1. Navegue hasta la ubicación del archivo fuente.
-2. Ejecute:
-   cvtmdpdf "Nombre_Del_Archivo.md"
+### 2. Instalar dependencias
 
-El sistema generará el PDF aplicando automáticamente el logo institucional y los márgenes configurados en `make_pdf.py`.
+Abrí una terminal en esa carpeta y ejecutá:
 
-## ⚙️ Estructura del Proyecto
-'make_pdf.py:' Motor principal de renderizado.
+```powershell
+pip install -r requirements.txt
+```
 
-'logo.png:' Recurso gráfico institucional.
+---
 
-'venv/:' Entorno virtual aislado para evitar conflictos de librerías.
+### 3. Registrar el comando `cvtmdpdf` en PowerShell
 
-'requirements.txt:' Lista de dependencias técnicas.
+Para poder escribir `cvtmdpdf archivo.md` desde cualquier carpeta, hay que agregar una función al perfil de PowerShell.
 
-## ⚖️ Licencia
-MIT License.
+#### Paso 1 — Verificar si ya existe el archivo de perfil
+
+```powershell
+Test-Path $PROFILE
+```
+
+- Si devuelve `True` → ya existe, pasá al paso 2.
+- Si devuelve `False` → crealo con:
+
+```powershell
+New-Item -ItemType File -Path $PROFILE -Force
+```
+
+#### Paso 2 — Abrir el perfil en el Bloc de notas
+
+```powershell
+notepad $PROFILE
+```
+
+#### Paso 3 — Agregar la función al final del archivo
+
+Pegá esto al final, reemplazando la ruta por donde guardaste el script:
+
+```powershell
+function cvtmdpdf {
+    python "C:\Users\TuUsuario\scripts\cvtmdpdf\make_pdf.py" @args
+}
+```
+
+Guardá y cerrá el Bloc de notas.
+
+#### Paso 4 — Recargar el perfil sin cerrar la terminal
+
+```powershell
+. $PROFILE
+```
+
+> ⚠️ **Si aparece un error de ejecución de scripts**, ejecutá esto una sola vez con PowerShell como administrador:
+> ```powershell
+> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+> ```
+
+#### Paso 5 — Verificar que funciona
+
+```powershell
+cvtmdpdf --help
+```
+
+Debería mostrar el mensaje de uso del script.
+
+---
+
+## Uso
+
+### Convertir un archivo
+
+```powershell
+cvtmdpdf "mi_documento.md"
+```
+
+El PDF se genera en la misma carpeta que el `.md`.
+
+### Convertir múltiples archivos a la vez
+
+```powershell
+cvtmdpdf "tp1.md" "tp2.md"
+```
+
+### Convertir todos los `.md` de una carpeta
+
+```powershell
+cvtmdpdf *.md
+```
+
+---
+
+## Configuración por proyecto (`cvtmdpdf.cfg`)
+
+La primera vez que ejecutás el script en una carpeta nueva, se genera automáticamente un archivo `cvtmdpdf.cfg` con los datos de la portada:
+
+```ini
+[portada]
+enabled     = true
+subtitulo   = Trabajo Práctico
+carrera     = T.U.I.
+catedra     = Nombre de la Cátedra
+docente     = Nombre del Docente
+integrantes =
+    Apellido, Nombre - DNI 12345678
+    Apellido, Nombre - DNI 87654321
+```
+
+Editá ese archivo con los datos de tu entrega y volvé a ejecutar el comando. El script lo busca primero en la carpeta del `.md` y, si no lo encuentra ahí, en la carpeta del propio script.
+
+> Para generar el PDF **sin portada**, cambiá `enabled = false`.
+
+---
+
+## Logo institucional
+
+Colocá un archivo `logo.png` en la misma carpeta que `make_pdf.py`. El script procesa automáticamente la transparencia del fondo. Si no existe, se omite el escudo sin generar errores.
+
+---
+
+## Elementos de Markdown soportados
+
+| Elemento | Sintaxis |
+|---|---|
+| Título del documento | `# Título` (primer H1 del archivo) |
+| Sección numerada | `## 1. Nombre` |
+| Subsección | `### Nombre` |
+| Párrafo normal | Texto plano |
+| **Negrita** / *Itálica* | `**texto**` / `*texto*` |
+| Cita | `> texto` |
+| Bullet | `- item` o `* item` |
+| Código en línea | `` `código` `` |
+| Bloque de código | ` ```lenguaje ... ``` ` |
+| Tabla | Sintaxis Markdown estándar |
+| Imagen | `![caption](ruta/imagen.png)` |
+| Separador | `---` |
+| Salto de página | `\salto de pagina` |
+
+---
+
+## Solución de problemas
+
+| Problema | Solución |
+|---|---|
+| `cvtmdpdf` no se reconoce como comando | Verificá que ejecutaste `. $PROFILE` o reiniciaste PowerShell |
+| Error de política de ejecución | Ejecutá `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` como administrador |
+| PDF generado sin portada | Revisá que `enabled = true` en el `.cfg` |
+| Sin escudo en la portada | Verificá que `logo.png` esté en la carpeta del script |
+| Errores en el procesamiento | Revisá el archivo `error_log.txt` que se genera en la carpeta de trabajo |
