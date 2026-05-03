@@ -16,10 +16,13 @@ Para evitar fallos de ejecución por un entorno mal configurado, asegúrese de c
 Siga esta secuencia de comandos para inicializar el entorno de trabajo:
 
 1. **Clonación del Repositorio**:
-   git clone https://github.com/maxicabrera7/md_pdf_unlar.git C:\dev\md_pdf_unlar
-   cd C:\dev\md_pdf_unlar
+```
+   1. git clone https://github.com/maxicabrera7/md_pdf_unlar.git C:\dev\md_pdf_unlar
+   2. cd C:\dev\md_pdf_unlar
+```
 
 2. **Instalación de Librerías**:
+   ```python
    pip install -r requirements.txt
 
 3. **Configuración de Automatización ($PROFILE)**:
