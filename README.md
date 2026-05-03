@@ -15,10 +15,13 @@ Para evitar fallos de ejecución por un entorno mal configurado, asegúrese de c
 
 Siga esta secuencia de comandos para inicializar el entorno de trabajo:
 
-1. **Clonación del Repositorio**:
+1. **Clonacion de repositorio**:
 ```powershell
-1. git clone https://github.com/maxicabrera7/md_pdf_unlar.git C:\dev\md_pdf_unlar
-2. cd C:\dev\md_pdf_unlar
+1. cd C:\\Dev
+2. git clone https://github.com/maxicabrera7/md_pdf_unlar.git
+3. cd md_pdf_unlar
+4. python -m
+5. .\Scripts\Activate.ps1
 ```
 
 2. **Instalación de Librerías**:
