@@ -11,8 +11,6 @@ El sistema requiere un entorno configurado correctamente para evitar errores de 
 *   **PowerShell 7+**: Terminal recomendada para la ejecución de scripts.
 
 ## 🚀 Instalación y Configuración Automática
-
-Ejecute este bloque de comandos en su terminal para inicializar el entorno. No requiere configuración manual de rutas.
 ```powershell
 # 1. Habilitar ejecución de scripts en el sistema
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
