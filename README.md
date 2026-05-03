@@ -16,7 +16,7 @@ El sistema requiere un entorno configurado correctamente para evitar errores de 
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 
 # 2. Clonar el repositorio e ingresar al directorio
-git clone [https://github.com/maxicabrera7/md_pdf_unlar.git](https://github.com/maxicabrera7/md_pdf_unlar.git)
+git clone https://github.com/maxicabrera7/md_pdf_unlar.git
 cd md_pdf_unlar
 
 # 3. Crear entorno virtual e instalar dependencias (reportlab, Pillow)
@@ -24,7 +24,7 @@ python -m venv venv
 .\venv\Scripts\pip install -q -r requirements.txt
 
 # 4. Registrar comando global en el $PROFILE
-```powershell
+
 $currentPath = Get-Location
 $profileDir = Split-Path $PROFILE -Parent
 if (!(Test-Path $profileDir)) { New-Item -Path $profileDir -ItemType Directory }
@@ -42,9 +42,10 @@ function cvtmdpdf {
     & "$currentPath\venv\Scripts\python.exe" "$currentPath\make_pdf.py" `$args[0]
 }
 "@
-```
+
 Add-Content -Path $PROFILE -Value `n$functionBlock
 Write-Host "[!] Instalación completada. Reinicie su terminal para usar 'cvtmdpdf'." -ForegroundColor Green
+```
 
 ## 📄 Modo de Uso
 
