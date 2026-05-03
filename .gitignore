@@ -1,0 +1,19 @@
+# Entornos virtuales
+venv/
+Scripts/
+Lib/
+Include/
+pyvenv.cfg
+
+# Archivos generados por el script
+*.pdf
+trans_logo.png
+error_log.txt
+cvtmdpdf.cfg
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Logs
+*.log
