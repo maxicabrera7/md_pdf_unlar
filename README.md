@@ -1,6 +1,6 @@
 # Conversor MD a PDF (UNLaR)
 
-Script de automatización para convertir archivos Markdown (.md) a PDF con el formato institucional de la UNLaR (T.U.I.). Optimizado para generación de trabajos prácticos con cumplimiento estricto de estilo y márgenes.
+Script de automatización para convertir archivos Markdown (.md) a PDF con el formato institucional de la UNLaR. Optimizado para generación de trabajos prácticos con cumplimiento estricto de estilo y márgenes.
 
 ## 🛠 Requisitos Técnicos
 
