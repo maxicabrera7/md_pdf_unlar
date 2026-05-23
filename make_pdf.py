@@ -661,7 +661,25 @@ def compilar_markdown(ruta_md):
         if linea.startswith('### '):
             story.append(Paragraph(formatear_texto(linea.replace('### ', '')), estilos['h2']))
             continue
+        # ── SUB-SECCIONES #### ───────────────────────────────────────────────
+        if linea.startswith('#### '):
+            story.append(Paragraph(
+        formatear_texto(linea.replace('#### ', '')),
+        S('eh4', fontName='Helvetica-Bold', fontSize=11, leading=14,
+          textColor=AZUL_CLARO, alignment=TA_LEFT,
+          spaceBefore=8, spaceAfter=4, keepWithNext=True)
+    ))
+            continue
 
+# ── SUB-SECCIONES ##### ──────────────────────────────────────────────
+        if linea.startswith('##### '):
+            story.append(Paragraph(
+            formatear_texto(linea.replace('##### ', '')),
+            S('eh5', fontName='Helvetica-Bold', fontSize=10.5, leading=13,
+            textColor=NEGRO_TEXTO, alignment=TA_LEFT,
+            spaceBefore=6, spaceAfter=3, keepWithNext=True)
+    ))
+            continue  
         # ── CITAS > ──────────────────────────────────────────────────────────
         if linea.startswith('> '):
             cita_texto = linea.replace('> ', '').strip()
